@@ -243,4 +243,11 @@ let myArray : number[] = [1,2,3,4,5] // number[]
 
 //con esa logica 
 
-let myArrayS : string[] = ['rojo','amarillo','verde'] // read only rojo, amarillo, verde
+let myArrayS : string[] = ['rojo','amarillo','verde'] //string[]
+
+let myArrayS1  = ['rojo','amarillo','verde'] as const // read only [rojo, amarillo, verde]
+
+let myArrayS2  = ['rojo','amarillo','verde',1] // number | string 
+
+let myArrayS3  = ['rojo','amarillo','verde',1] as const // read [only rojo, amarillo, verde,1]
+
