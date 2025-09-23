@@ -77,3 +77,10 @@ function mostrarError2(errorType: ERROR_TYPES_2) {
   } else {
     console.log('Error desconocido');
   }}
+
+//esto se traduce como mucho codigo js, como podriamos reducirlo (diciendo que enum es una constante)
+//lado negativo de usar const enums
+
+//usar el unums normal cuando el componente va hacia el exterior (librerias) (que esta fuera de la app)
+
+//en cambio usar const enum cuando es algo interno de la app

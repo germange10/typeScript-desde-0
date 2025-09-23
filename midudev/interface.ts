@@ -155,3 +155,8 @@ type HeroY = {
 //2.en lugar de eso, podés hacer type nuevo = existente & { propiedades nuevas } para crear un nuevo type que combine las propiedades de ambos.
     
 // Zapatilla = Producto & { talla: number; color: string; };
+
+//3. acepta la utilizacion de primitivos, union types, intersection types y tuplas, lo cual no es posible con interfaces.
+
+//4. no se extienden automaticamente, lo que puede evitar conflictos en proyectos grandes.
+
