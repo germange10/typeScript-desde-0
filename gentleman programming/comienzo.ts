@@ -237,6 +237,8 @@ const method =(text:unknown): 0 | undefined => {
 }
 
 
+//importancia de as const 
+
 //que tipo de dato tiene 
 
 let myArray : number[] = [1,2,3,4,5] // number[]
@@ -251,3 +253,166 @@ let myArrayS2  = ['rojo','amarillo','verde',1] // number | string
 
 let myArrayS3  = ['rojo','amarillo','verde',1] as const // read [only rojo, amarillo, verde,1]
 
+function obtenerConfiguracion(){
+  return{
+    modo:'prod',
+    version:'1.0',
+    opciones: {
+      depuracion : false,
+    },
+  } as const
+}// va a devolver exactamente esa configuracion
+
+const configuracion = obtenerConfiguracion();
+//configuracion.opciones.depuracion=true no me va a dejar modificarlo (me va a tirar un error)
+
+
+//generico 
+
+const metodoW = <T> (x:T) : T => x;
+
+const y = metodoW<number> ( 1);
+const z = metodoW<string> ('1');
+
+interface saludar <T> {
+  saludar(x:T):string
+}
+
+const personaQ :saludar<string>={
+  saludar(x:string) {
+      return `hola ${x}`
+  },
+
+}
+
+const personaQ2 :saludar<number>={
+  saludar(x:number) {
+      return `hola ${x}`
+  },
+
+}
+
+//functional overloading () /lo que te permite es si recibe un string devuelve un tipo dist a string
+
+// functional overloading
+
+interface Persona {
+    name: string;
+    saludar(x: string): string;
+}
+
+interface Perro {
+    raza: string;
+    saludar(x: number): number;
+}
+
+function metodoStringONumber(x: Persona): string; //si me pasás una Persona, te devuelvo un string
+function metodoStringONumber(x: Perro): number;//si me pasás un Perro, te devuelvo un number
+function metodoStringONumber(x: Persona | Perro): string | number {
+    if ("raza" in x) {
+        return x.saludar( 1);
+    }
+
+
+if ('name' in x) {
+    return x.saludar('1'); 
+}
+
+return x;
+
+}
+
+//otra cosa 
+
+enum claves {
+  name ='name',
+  raza ='raza'
+}
+
+type algo ={
+  [key in claves]:string
+}
+
+//hagamos un tipo que dependa de una property para el resultado de una function 
+
+type Dependant <T extends {property:any}> = T['property']
+
+type Independant = {
+  property: number;
+}
+
+const dependant : Dependant<Independant>=1 // funciona 
+//const dependant : Dependant<Independant>='1' // tira un error  
+
+//explicacion 
+// 👉 Esto significa:
+
+// T es un tipo genérico que obligatoriamente tiene una propiedad llamada property.
+
+// Dependant<T> no es todo T, sino específicamente el tipo de la propiedad property dentro de T.
+
+// 📌 T['property'] es un lookup type → es como acceder al tipo de un campo dentro de un objeto.
+
+// Dependant<Independant> equivale a Independant["property"].
+
+// Como Independant["property"] es number, entonces:
+
+// ✨ En resumen
+
+// Dependant<T> siempre “hereda” el tipo de la propiedad property de T
+
+
+//dado el caso de que quiera juntar 2 enums y usar el valor de las propiedades (considerar dejar la droga)
+
+enum Numbers1 {
+    "NUMBER1" = "number1",
+    "NUMBER2" = "number2",
+}
+
+enum Numbers2 {
+    "NUMBER3" = "number3",
+}
+
+const myNumbers = { ...Numbers1, ...Numbers2 } as const; //juntamos con spread operator
+const mixValues = Object.values(myNumbers);
+
+type MixNumbers = (typeof mixValues)[number];
+
+type Enums = {
+    [key in MixNumbers]: any;
+};
+
+//explicacion 
+
+//spread operator
+// {
+//   NUMBER1: "number1",
+//   NUMBER2: "number2",
+//   NUMBER3: "number3"
+// }
+
+//Obtener los valores del objeto
+
+//const mixValues = Object.values(myNumbers);
+
+
+//Object.values(myNumbers) devuelve un array de valores:
+
+//["number1", "number2", "number3"]
+
+//4. Definir un type con esos valores
+
+//type MixNumbers = (typeof mixValues)[number];
+
+
+// typeof mixValues → es el tipo de ese array (string[]).
+
+// [number] → significa "el tipo de cualquiera de los elementos del array".
+
+// Resultado:
+
+//type MixNumbers = "number1" | "number2" | "number3";
+
+//✅ En resumen: este patrón sirve para convertir enums en un objeto tipado dinámicamente, 
+//y luego derivar un type que asegura que las claves siempre correspondan a los valores
+//  reales de los enums.
